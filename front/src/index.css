@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button{
+font-weight:600;
+}
+
+input,select,textarea{
+font-size:16px;
+}
