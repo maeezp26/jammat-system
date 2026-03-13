@@ -1,107 +1,189 @@
 import { useParams } from "react-router-dom";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import API from "../api/axios";
 
-function MonthStats(){
+function MonthStats() {
 
-const {year,month} = useParams();
+  const { year, month } = useParams();
 
-const [stats,setStats] = useState(null);
+  const [stats, setStats] = useState(null);
 
-const exportPDF = () => {
+  useEffect(() => {
 
-const doc = new jsPDF();
+    const load = async () => {
 
-doc.setFontSize(18);
-doc.text(`${month} ${year} Jammat Statistics`, 20, 20);
+      const res = await API.get(`/jammat/statistics/${year}/${month}`);
 
-let y = 40;
+      setStats(res.data);
 
-doc.setFontSize(12);
+    };
 
-doc.text(`Total Jammat: ${stats.total}`, 20, y);
-y += 10;
+    load();
 
-doc.text(`Masturat Jammat: ${stats.masturat}`, 20, y);
-y += 10;
+  }, [year, month]);
 
-doc.text(`Ramzan Jammat: ${stats.ramzan}`, 20, y);
-y += 10;
+  const exportPDF = () => {
 
-Object.keys(stats.types).forEach(type => {
+    const doc = new jsPDF();
 
-doc.text(`${type} Jammat: ${stats.types[type]}`, 20, y);
-y += 10;
+    doc.setFontSize(18);
+    doc.text(`${month} ${year} Jammat Statistics`, 20, 20);
 
-});
+    let y = 40;
 
-doc.save(`${month}_${year}_statistics.pdf`);
+    doc.setFontSize(14);
+    doc.text("Men Jammat", 20, y);
+    y += 10;
 
-};
+    doc.setFontSize(12);
 
-useEffect(()=>{
+    doc.text(`3 Days: ${stats.mens?.["3days"] || 0}`, 20, y);
+    y += 8;
 
-const load = async ()=>{
+    doc.text(`10 Days: ${stats.mens?.["10days"] || 0}`, 20, y);
+    y += 8;
 
-const res = await API.get(`/jammat/statistics/${year}/${month}`);
+    doc.text(`40 Days: ${stats.mens?.["40days"] || 0}`, 20, y);
+    y += 8;
 
-setStats(res.data);
+    doc.text(`4 Months: ${stats.mens?.["4months"] || 0}`, 20, y);
+    y += 8;
 
-};
+    doc.text(`Ramzan: ${stats.mens?.ramzan || 0}`, 20, y);
+    y += 12;
 
-load();
 
-},[]);
+    doc.setFontSize(14);
+    doc.text("Masturat Jammat", 20, y);
+    y += 10;
 
-if(!stats) return <div className="p-4">Loading...</div>;
+    doc.setFontSize(12);
 
-return(
+    doc.text(`3 Days: ${stats.masturat?.["3days"] || 0}`, 20, y);
+    y += 8;
 
-<div className="p-4 max-w-md mx-auto">
+    doc.text(`10 Days: ${stats.masturat?.["10days"] || 0}`, 20, y);
+    y += 8;
 
-<h1 className="text-xl font-bold mb-4">
+    doc.text(`40 Days: ${stats.masturat?.["40days"] || 0}`, 20, y);
+    y += 8;
 
-{month} {year} Statistics
+    doc.text(`4 Months: ${stats.masturat?.["4months"] || 0}`, 20, y);
+    y += 8;
 
-</h1>
+    doc.text(`Ramzan: ${stats.masturat?.ramzan || 0}`, 20, y);
+    y += 12;
 
-<div className="space-y-2">
 
-    <button
-onClick={exportPDF}
-className="w-full bg-blue-600 text-white p-3 rounded mb-4"
->
-Export PDF
-</button>
+    doc.setFontSize(14);
+    doc.text("Total Summary", 20, y);
+    y += 10;
 
-<div className="bg-white p-3 rounded shadow">
-Total Jammat: {stats.total}
-</div>
+    doc.setFontSize(12);
 
-<div className="bg-white p-3 rounded shadow">
-Masturat: {stats.masturat}
-</div>
+    doc.text(
+      `3 Days: ${(stats.mens?.["3days"] || 0) + (stats.masturat?.["3days"] || 0)}`,
+      20,
+      y
+    );
+    y += 8;
 
-<div className="bg-white p-3 rounded shadow">
-Ramzan: {stats.ramzan}
-</div>
+    doc.text(
+      `10 Days: ${(stats.mens?.["10days"] || 0) + (stats.masturat?.["10days"] || 0)}`,
+      20,
+      y
+    );
+    y += 8;
 
-<h2 className="font-semibold mt-4">
-Types
-</h2>
+    doc.text(
+      `40 Days: ${(stats.mens?.["40days"] || 0) + (stats.masturat?.["40days"] || 0)}`,
+      20,
+      y
+    );
+    y += 8;
 
-{Object.entries(stats.types).map(([type,count])=>(
-<div key={type} className="bg-white p-3 rounded shadow">
-{type} : {count}
-</div>
-))}
+    doc.text(
+      `4 Months: ${(stats.mens?.["4months"] || 0) + (stats.masturat?.["4months"] || 0)}`,
+      20,
+      y
+    );
 
-</div>
+    doc.save(`${month}_${year}_statistics.pdf`);
 
-</div>
+  };
 
-);
+  if (!stats) return <div className="p-4">Loading...</div>;
+
+  return (
+
+    <div className="p-4 max-w-xl mx-auto">
+
+      <h1 className="text-xl font-bold mb-4">
+        {month} {year} Statistics
+      </h1>
+
+      <button
+        onClick={exportPDF}
+        className="w-full bg-blue-600 text-white p-3 rounded mb-4"
+      >
+        Export PDF
+      </button>
+
+      {/* MEN JAMMAT */}
+      <div className="bg-blue-100 p-4 rounded mb-4">
+
+        <h2 className="font-bold mb-2">Men Jammat</h2>
+
+        <div>3 Days: {stats.mens?.["3days"] || 0}</div>
+        <div>10 Days: {stats.mens?.["10days"] || 0}</div>
+        <div>40 Days: {stats.mens?.["40days"] || 0}</div>
+        <div>4 Months: {stats.mens?.["4months"] || 0}</div>
+        <div>Ramzan: {stats.mens?.ramzan || 0}</div>
+
+      </div>
+
+
+      {/* WOMEN JAMMAT */}
+      <div className="bg-pink-100 p-4 rounded mb-4">
+
+        <h2 className="font-bold mb-2">Masturat Jammat</h2>
+
+        <div>3 Days: {stats.masturat?.["3days"] || 0}</div>
+        <div>10 Days: {stats.masturat?.["10days"] || 0}</div>
+        <div>40 Days: {stats.masturat?.["40days"] || 0}</div>
+        <div>4 Months: {stats.masturat?.["4months"] || 0}</div>
+        <div>Ramzan: {stats.masturat?.ramzan || 0}</div>
+
+      </div>
+
+
+      {/* SUMMARY */}
+      <div className="bg-green-500 text-white p-4 rounded">
+
+        <h2 className="font-bold mb-2">Total Jammat Summary</h2>
+
+        <div>
+          3 Days: {(stats.mens?.["3days"] || 0) + (stats.masturat?.["3days"] || 0)}
+        </div>
+
+        <div>
+          10 Days: {(stats.mens?.["10days"] || 0) + (stats.masturat?.["10days"] || 0)}
+        </div>
+
+        <div>
+          40 Days: {(stats.mens?.["40days"] || 0) + (stats.masturat?.["40days"] || 0)}
+        </div>
+
+        <div>
+          4 Months: {(stats.mens?.["4months"] || 0) + (stats.masturat?.["4months"] || 0)}
+        </div>
+
+      </div>
+
+    </div>
+
+  );
 
 }
 

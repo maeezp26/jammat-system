@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import MonthPage from "./pages/MonthPage";
@@ -13,26 +13,35 @@ import EditJammat from "./admin/EditJammat";
 import AdminDashboard from "./admin/AdminDashboard";
 import YearStatistics from "./pages/YearStatistics";
 
+import Navbar from "./Navbar";
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Routes>
-        {/* Public */}
-        <Route path="/" element={<Home />} />
-        <Route path="/month/:year/:month" element={<MonthPage />} />
-        <Route path="/jammat/:id" element={<JammatDetail />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/statistics" element={<StatisticsPage />} />
-        <Route path="/statistics/:year/:month" element={<MonthStats />} />
-        <Route path="/statistics/:year" element={<YearStatistics />} />
+  
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
 
-        {/* Admin */}
-        <Route path="/admin/edit/:id" element={<EditJammat />} />
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/add" element={<AddJammat />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      </Routes>
-    </div>
+        <Routes>
+
+          {/* Public */}
+          <Route path="/" element={<Home />} />
+          <Route path="/month/:year/:month" element={<MonthPage />} />
+          <Route path="/jammat/:id" element={<JammatDetail />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/statistics" element={<StatisticsPage />} />
+          <Route path="/statistics/:year/:month" element={<MonthStats />} />
+          <Route path="/statistics/:year" element={<YearStatistics />} />
+
+          {/* Admin */}
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/add" element={<AddJammat />} />
+          <Route path="/admin/edit/:id" element={<EditJammat />} />
+
+        </Routes>
+
+      </div>
+   
   );
 }
 

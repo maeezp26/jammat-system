@@ -138,35 +138,77 @@ exports.getYearStatistics = async (req, res) => {
 
     const jammats = await Jammat.find({ year });
 
-    // type counts
-    const typeStats = {};
+   const mens = {
+  "3days": 0,
+  "10days": 0,
+  "40days": 0,
+  "4months": 0
+};
 
-    jammats.forEach(j => {
-      typeStats[j.type] = (typeStats[j.type] || 0) + 1;
-    });
+const masturat = {
+  "3days": 0,
+  "10days": 0,
+  "40days": 0,
+  "4months": 0
+};
 
-    // masturat count
-    const masturatTotal = jammats.filter(j => j.category === "masturat").length;
+    let mensRamzan = 0;
+    let masturatRamzan = 0;
 
-    // ramzan count
-    const ramzanTotal = jammats.filter(j => j.isRamzan).length;
-
-    // total members participated
     let totalMembers = 0;
 
     jammats.forEach(j => {
+
+      // count members
       j.members.forEach(group => {
         totalMembers += group.names.length;
       });
+
+      // MEN JAMMAT
+      if (j.category === "men") {
+
+        mens[j.type] = (mens[j.type] || 0) + 1;
+
+        if (j.isRamzan) mensRamzan++;
+
+      }
+
+      // WOMEN JAMMAT
+      if (j.category === "masturat") {
+
+        masturat[j.type] = (masturat[j.type] || 0) + 1;
+
+        if (j.isRamzan) masturatRamzan++;
+
+      }
+
     });
 
     res.json({
+
       year,
-      typeStats,
-      masturatTotal,
-      ramzanTotal,
-      totalJammat: jammats.length,
+
+      mens: {
+        typeStats: mens,
+        ramzan: mensRamzan
+      },
+
+      masturat: {
+        typeStats: masturat,
+        ramzan: masturatRamzan
+      },
+
+      summary: {
+
+        "3days": (mens["3days"] || 0) + (masturat["3days"] || 0),
+        "10days": (mens["10days"] || 0) + (masturat["10days"] || 0),
+        "40days": (mens["40days"] || 0) + (masturat["40days"] || 0),
+        "4months": (mens["4months"] || 0) + (masturat["4months"] || 0)
+
+      },
+
       totalMembers
+
     });
 
   } catch (error) {
