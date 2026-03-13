@@ -232,6 +232,7 @@ exports.exportJammatPDF = async (req, res) => {
 
 exports.getMonthStatistics = async (req, res) => {
   try {
+
     const { year, month } = req.params;
 
     const jammats = await Jammat.find({
@@ -239,23 +240,75 @@ exports.getMonthStatistics = async (req, res) => {
       month
     });
 
-    const stats = {
-      total: jammats.length,
-      masturat: jammats.filter(
-        (j) => j.category?.toLowerCase() === "masturat"
-      ).length,
-      ramzan: jammats.filter((j) => j.isRamzan).length,
-      types: {},
+    const mens = {
+      "3days": 0,
+      "10days": 0,
+      "40days": 0,
+      "4months": 0
     };
 
-    jammats.forEach((j) => {
+    const masturat = {
+      "3days": 0,
+      "10days": 0,
+      "40days": 0,
+      "4months": 0
+    };
+
+    let mensRamzan = 0;
+    let masturatRamzan = 0;
+
+    jammats.forEach(j => {
+
       const type = j.type?.toLowerCase();
-      stats.types[type] = (stats.types[type] || 0) + 1;
+
+      if (j.category?.toLowerCase() === "men") {
+
+        if (mens[type] !== undefined) {
+          mens[type]++;
+        }
+
+        if (j.isRamzan) mensRamzan++;
+
+      }
+
+      if (j.category?.toLowerCase() === "masturat") {
+
+        if (masturat[type] !== undefined) {
+          masturat[type]++;
+        }
+
+        if (j.isRamzan) masturatRamzan++;
+
+      }
+
     });
 
-    res.json(stats);
+    res.json({
+
+      mens: {
+        typeStats: mens,
+        ramzan: mensRamzan
+      },
+
+      masturat: {
+        typeStats: masturat,
+        ramzan: masturatRamzan
+      },
+
+      summary: {
+
+        "3days": mens["3days"] + masturat["3days"],
+        "10days": mens["10days"] + masturat["10days"],
+        "40days": mens["40days"] + masturat["40days"],
+        "4months": mens["4months"] + masturat["4months"]
+
+      }
+
+    });
 
   } catch (err) {
+
     res.status(500).json({ message: err.message });
+
   }
 };
