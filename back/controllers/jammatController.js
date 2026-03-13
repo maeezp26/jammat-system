@@ -165,7 +165,7 @@ const masturat = {
       });
 
       // MEN JAMMAT
-      if (j.category === "men") {
+      if (j.category?.toLowerCase() === "men") {
 
         mens[j.type] = (mens[j.type] || 0) + 1;
 
@@ -174,7 +174,7 @@ const masturat = {
       }
 
       // WOMEN JAMMAT
-      if (j.category === "masturat") {
+      if (j.category?.toLowerCase() === "masturat") {
 
         masturat[j.type] = (masturat[j.type] || 0) + 1;
 
@@ -238,14 +238,18 @@ exports.getMonthStatistics = async (req, res) => {
 
     const stats = {
       total: jammats.length,
-      masturat: jammats.filter((j) => j.category === "masturat").length,
-      ramzan: jammats.filter((j) => j.isRamzan).length,
+     masturat: jammats.filter((j) => j.category?.toLowerCase() === "masturat").length,
+ramzan: jammats.filter((j) => j.isRamzan).length,
       types: {},
     };
 
     jammats.forEach((j) => {
-      stats.types[j.type] = (stats.types[j.type] || 0) + 1;
-    });
+
+  const type = j.type?.toLowerCase();
+
+  stats.types[type] = (stats.types[type] || 0) + 1;
+
+});
 
     res.json(stats);
   } catch (err) {
