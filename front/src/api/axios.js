@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
+axios.create({
+  baseURL: "https://jammat-system.onrender.com"
+})
 
 export default API;
