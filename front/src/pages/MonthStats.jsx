@@ -6,17 +6,13 @@ import API from "../api/axios";
 function MonthStats() {
 
   const { year, month } = useParams();
-
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
 
     const load = async () => {
-
       const res = await API.get(`/jammat/statistics/${year}/${month}`);
-
       setStats(res.data);
-
     };
 
     load();
@@ -38,16 +34,16 @@ function MonthStats() {
 
     doc.setFontSize(12);
 
-    doc.text(`3 Days: ${stats.mens?.["3days"] || 0}`, 20, y);
+    doc.text(`3 Days: ${stats.mens?.typeStats?.["3days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`10 Days: ${stats.mens?.["10days"] || 0}`, 20, y);
+    doc.text(`10 Days: ${stats.mens?.typeStats?.["10days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`40 Days: ${stats.mens?.["40days"] || 0}`, 20, y);
+    doc.text(`40 Days: ${stats.mens?.typeStats?.["40days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`4 Months: ${stats.mens?.["4months"] || 0}`, 20, y);
+    doc.text(`4 Months: ${stats.mens?.typeStats?.["4months"] || 0}`, 20, y);
     y += 8;
 
     doc.text(`Ramzan: ${stats.mens?.ramzan || 0}`, 20, y);
@@ -60,16 +56,16 @@ function MonthStats() {
 
     doc.setFontSize(12);
 
-    doc.text(`3 Days: ${stats.masturat?.["3days"] || 0}`, 20, y);
+    doc.text(`3 Days: ${stats.masturat?.typeStats?.["3days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`10 Days: ${stats.masturat?.["10days"] || 0}`, 20, y);
+    doc.text(`10 Days: ${stats.masturat?.typeStats?.["10days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`40 Days: ${stats.masturat?.["40days"] || 0}`, 20, y);
+    doc.text(`40 Days: ${stats.masturat?.typeStats?.["40days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(`4 Months: ${stats.masturat?.["4months"] || 0}`, 20, y);
+    doc.text(`4 Months: ${stats.masturat?.typeStats?.["4months"] || 0}`, 20, y);
     y += 8;
 
     doc.text(`Ramzan: ${stats.masturat?.ramzan || 0}`, 20, y);
@@ -82,32 +78,16 @@ function MonthStats() {
 
     doc.setFontSize(12);
 
-    doc.text(
-      `3 Days: ${(stats.mens?.["3days"] || 0) + (stats.masturat?.["3days"] || 0)}`,
-      20,
-      y
-    );
+    doc.text(`3 Days: ${stats.summary?.["3days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(
-      `10 Days: ${(stats.mens?.["10days"] || 0) + (stats.masturat?.["10days"] || 0)}`,
-      20,
-      y
-    );
+    doc.text(`10 Days: ${stats.summary?.["10days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(
-      `40 Days: ${(stats.mens?.["40days"] || 0) + (stats.masturat?.["40days"] || 0)}`,
-      20,
-      y
-    );
+    doc.text(`40 Days: ${stats.summary?.["40days"] || 0}`, 20, y);
     y += 8;
 
-    doc.text(
-      `4 Months: ${(stats.mens?.["4months"] || 0) + (stats.masturat?.["4months"] || 0)}`,
-      20,
-      y
-    );
+    doc.text(`4 Months: ${stats.summary?.["4months"] || 0}`, 20, y);
 
     doc.save(`${month}_${year}_statistics.pdf`);
 
@@ -130,15 +110,16 @@ function MonthStats() {
         Export PDF
       </button>
 
+
       {/* MEN JAMMAT */}
       <div className="bg-blue-100 p-4 rounded mb-4">
 
         <h2 className="font-bold mb-2">Men Jammat</h2>
 
-        <div>3 Days: {stats.mens?.["3days"] || 0}</div>
-        <div>10 Days: {stats.mens?.["10days"] || 0}</div>
-        <div>40 Days: {stats.mens?.["40days"] || 0}</div>
-        <div>4 Months: {stats.mens?.["4months"] || 0}</div>
+        <div>3 Days: {stats.mens?.typeStats?.["3days"] || 0}</div>
+        <div>10 Days: {stats.mens?.typeStats?.["10days"] || 0}</div>
+        <div>40 Days: {stats.mens?.typeStats?.["40days"] || 0}</div>
+        <div>4 Months: {stats.mens?.typeStats?.["4months"] || 0}</div>
         <div>Ramzan: {stats.mens?.ramzan || 0}</div>
 
       </div>
@@ -149,10 +130,10 @@ function MonthStats() {
 
         <h2 className="font-bold mb-2">Masturat Jammat</h2>
 
-        <div>3 Days: {stats.masturat?.["3days"] || 0}</div>
-        <div>10 Days: {stats.masturat?.["10days"] || 0}</div>
-        <div>40 Days: {stats.masturat?.["40days"] || 0}</div>
-        <div>4 Months: {stats.masturat?.["4months"] || 0}</div>
+        <div>3 Days: {stats.masturat?.typeStats?.["3days"] || 0}</div>
+        <div>10 Days: {stats.masturat?.typeStats?.["10days"] || 0}</div>
+        <div>40 Days: {stats.masturat?.typeStats?.["40days"] || 0}</div>
+        <div>4 Months: {stats.masturat?.typeStats?.["4months"] || 0}</div>
         <div>Ramzan: {stats.masturat?.ramzan || 0}</div>
 
       </div>
@@ -163,21 +144,10 @@ function MonthStats() {
 
         <h2 className="font-bold mb-2">Total Jammat Summary</h2>
 
-        <div>
-          3 Days: {(stats.mens?.["3days"] || 0) + (stats.masturat?.["3days"] || 0)}
-        </div>
-
-        <div>
-          10 Days: {(stats.mens?.["10days"] || 0) + (stats.masturat?.["10days"] || 0)}
-        </div>
-
-        <div>
-          40 Days: {(stats.mens?.["40days"] || 0) + (stats.masturat?.["40days"] || 0)}
-        </div>
-
-        <div>
-          4 Months: {(stats.mens?.["4months"] || 0) + (stats.masturat?.["4months"] || 0)}
-        </div>
+        <div>3 Days: {stats.summary?.["3days"] || 0}</div>
+        <div>10 Days: {stats.summary?.["10days"] || 0}</div>
+        <div>40 Days: {stats.summary?.["40days"] || 0}</div>
+        <div>4 Months: {stats.summary?.["4months"] || 0}</div>
 
       </div>
 
