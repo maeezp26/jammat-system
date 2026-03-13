@@ -234,24 +234,27 @@ exports.getMonthStatistics = async (req, res) => {
   try {
     const { year, month } = req.params;
 
-    const jammats = await Jammat.find({ year, month });
+    const jammats = await Jammat.find({
+      year: Number(year),
+      month
+    });
 
     const stats = {
       total: jammats.length,
-     masturat: jammats.filter((j) => j.category?.toLowerCase() === "masturat").length,
-ramzan: jammats.filter((j) => j.isRamzan).length,
+      masturat: jammats.filter(
+        (j) => j.category?.toLowerCase() === "masturat"
+      ).length,
+      ramzan: jammats.filter((j) => j.isRamzan).length,
       types: {},
     };
 
     jammats.forEach((j) => {
-
-  const type = j.type?.toLowerCase();
-
-  stats.types[type] = (stats.types[type] || 0) + 1;
-
-});
+      const type = j.type?.toLowerCase();
+      stats.types[type] = (stats.types[type] || 0) + 1;
+    });
 
     res.json(stats);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
