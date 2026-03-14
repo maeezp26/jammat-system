@@ -42,7 +42,7 @@ const isMasturat = j.category === "masturat";
 doc.setTextColor(isMasturat ? 180 : 40, isMasturat ? 0 : 40, isMasturat ? 120 : 40);
 
 doc.text(
-  `Jammat ${j.jammatNo} ${isMasturat ? "(Masturat)" : "(Men)"}`,
+  `Jammat ${j.jammatNo} ${isMasturat ? "(Masturat)" : ""}`,
   20,
   y + 7
 );
