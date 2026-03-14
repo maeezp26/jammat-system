@@ -10,58 +10,96 @@ function MonthPage() {
   const [jammats, setJammats] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const exportPDF = () => {
+ const exportPDF = () => {
 
-const doc = new jsPDF();
+  const doc = new jsPDF();
 
-doc.setFontSize(18);
-doc.text(`${month} ${year} Jammat Report`, 20, 20);
+  doc.setFontSize(18);
+  doc.setTextColor(40);
+  doc.text(`${month} ${year} Jammat Report`, 20, 20);
 
-let y = 35;
+  let y = 30;
 
-jammats.forEach((j, index) => {
+  jammats.forEach((j, index) => {
 
-doc.setFontSize(14);
-doc.text(`Jammat ${j.jammatNo}`, 20, y);
-y += 7;
+    if (y > 260) {
+      doc.addPage();
+      y = 20;
+    }
 
-doc.setFontSize(11);
+    const start = new Date(j.startDate).getDate();
+    const end = new Date(j.endDate).getDate();
 
-doc.text(`Type: ${j.type}`, 20, y);
-y += 6;
+    // Card background
+    doc.setFillColor(245, 245, 245);
+    doc.rect(15, y, 180, 10, "F");
 
-doc.text(`Masjid: ${j.masjidName}`, 20, y);
-y += 6;
+    doc.setFontSize(14);
+    doc.setTextColor(30);
+    doc.text(`Jammat ${j.jammatNo}`, 20, y + 7);
 
-doc.text(`Route: ${j.route.join(" → ")}`, 20, y);
-y += 6;
+    y += 15;
 
-doc.text(`Saathi: ${j.saathi}`, 20, y);
-y += 6;
+    doc.setFontSize(11);
 
-doc.text("Members:", 20, y);
-y += 6;
+    doc.text(`Type: ${j.type}`, 20, y);
+    doc.text(`Masjid: ${j.masjidName}`, 100, y);
+    y += 6;
 
-j.members.forEach(group => {
+    doc.text(`Ameer: ${j.ameer || "-"}`, 20, y);
+    doc.text(`Saathi: ${j.saathi}`, 100, y);
+    y += 6;
 
-doc.text(`${group.masjid}`, 25, y);
-y += 5;
+    doc.text(`Dates: ${start}-${end} ${month}`, 20, y);
+    y += 8;
 
-group.names.forEach(name => {
+    // Route
+    doc.setFont(undefined, "bold");
+    doc.text("Route:", 20, y);
+    doc.setFont(undefined, "normal");
 
-doc.text(`- ${name}`, 30, y);
-y += 5;
+    y += 5;
 
-});
+    doc.text(j.route.join(" → "), 25, y);
 
-});
+    y += 8;
 
-y += 8;
+    // Members
+    doc.setFont(undefined, "bold");
+    doc.text("Members:", 20, y);
+    doc.setFont(undefined, "normal");
 
-});
+    y += 6;
 
-doc.save(`${month}_${year}_jammat_report.pdf`);
+    j.members.forEach(group => {
 
+      doc.setFont(undefined, "bold");
+      doc.text(group.masjid, 25, y);
+      doc.setFont(undefined, "normal");
+
+      y += 5;
+
+      group.names.forEach(name => {
+
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.text(`• ${name}`, 30, y);
+        y += 5;
+
+      });
+
+      y += 4;
+
+    });
+
+    y += 8;
+
+  });
+
+  doc.save(`${month}_${year}_jammat_report.pdf`);
 };
 
   useEffect(() => {
@@ -90,23 +128,21 @@ doc.save(`${month}_${year}_jammat_report.pdf`);
         {month} {year}
       </h1>
 
-     <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => navigate(`/statistics/${year}/${month}`)}
+          className="flex-1 bg-purple-500 text-white p-3 rounded"
+        >
+          Statistics
+        </button>
 
-<button
-onClick={() => navigate(`/statistics/${year}/${month}`)}
-className="flex-1 bg-purple-500 text-white p-3 rounded"
->
-Statistics
-</button>
-
-<button
-onClick={exportPDF}
-className="flex-1 bg-blue-500 text-white p-3 rounded"
->
-Download PDF
-</button>
-
-</div>
+        <button
+          onClick={exportPDF}
+          className="flex-1 bg-blue-500 text-white p-3 rounded"
+        >
+          Download PDF
+        </button>
+      </div>
 
       {jammats.length === 0 && <p>No Jammat found</p>}
 
@@ -125,7 +161,7 @@ Download PDF
                 <div className="font-bold text-lg">
                   {start}-{end}
                 </div>
-          
+
                 <div className="text-sm text-gray-600">
                   {j.category === "masturat" ? "Masturat " : ""}
                   Jammat {j.jammatNo}
