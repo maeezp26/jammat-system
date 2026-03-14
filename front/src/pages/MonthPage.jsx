@@ -34,9 +34,20 @@ function MonthPage() {
     doc.setFillColor(245, 245, 245);
     doc.rect(15, y, 180, 10, "F");
 
+
     doc.setFontSize(14);
-    doc.setTextColor(30);
-    doc.text(`Jammat ${j.jammatNo}`, 20, y + 7);
+
+const isMasturat = j.category === "masturat";
+
+doc.setTextColor(isMasturat ? 180 : 40, isMasturat ? 0 : 40, isMasturat ? 120 : 40);
+
+doc.text(
+  `Jammat ${j.jammatNo} ${isMasturat ? "(Masturat)" : "(Men)"}`,
+  20,
+  y + 7
+);
+
+doc.setTextColor(40);
 
     y += 15;
 
