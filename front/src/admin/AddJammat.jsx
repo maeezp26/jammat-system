@@ -74,6 +74,7 @@ try{
 await API.post("/jammat",{
 
 ...form,
+masjidName: form.masjidName.trim(), // ✅ ADD THIS
 saathi:saathiCount,
 route:form.route.split(",").map(r=>r.trim()),
 
