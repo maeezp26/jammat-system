@@ -10,7 +10,7 @@ function YearStatistics() {
   const [masjidStats, setMasjidStats] = useState([]);
   const [ramzanStats, setRamzanStats] = useState([]);
 
-  const [showRamzan, setShowRamzan] = useState(false); // ✅ TOGGLE
+  const [showRamzan, setShowRamzan] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -19,10 +19,15 @@ function YearStatistics() {
         setStats(res.data);
 
         const res2 = await API.get(`/jammat/masjid-stats/${year}`);
-        setMasjidStats(res2.data);
-
         const res3 = await API.get(`/jammat/ramzan-masjid-stats/${year}`);
-        setRamzanStats(res3.data);
+
+        // ✅ SAFE ARRAY CHECK
+        setMasjidStats(Array.isArray(res2.data) ? res2.data : []);
+        setRamzanStats(Array.isArray(res3.data) ? res3.data : []);
+
+        // ✅ DEBUG (optional)
+        console.log("Masjid Stats:", res2.data);
+        console.log("Ramzan Stats:", res3.data);
 
       } catch (err) {
         console.error("Failed to load statistics", err);
@@ -58,6 +63,8 @@ function YearStatistics() {
 
   if (!stats) return <div className="p-4">Loading...</div>;
 
+  const data = showRamzan ? ramzanStats : masjidStats;
+
   return (
     <div className="p-4 max-w-5xl mx-auto">
 
@@ -76,10 +83,9 @@ function YearStatistics() {
           Export PDF
         </button>
 
-        {/* ✅ TOGGLE BUTTON */}
         <button
           onClick={() => setShowRamzan(!showRamzan)}
-          className={`px-4 py-2 rounded shadow text-white ${
+          className={`px-4 py-2 rounded shadow text-white transition ${
             showRamzan ? "bg-yellow-500" : "bg-gray-700"
           }`}
         >
@@ -116,26 +122,30 @@ function YearStatistics() {
         <div>4 Months: {stats.summary?.["4months"] || 0}</div>
       </div>
 
-      {/* ✅ MASJID SECTION WITH TOGGLE */}
+      {/* MASJID STATS */}
       <div className="bg-white p-4 rounded shadow">
 
         <h2 className="font-bold mb-3 text-lg">
           {showRamzan ? "Ramzan Masjid Stats 🌙" : "Masjid Wise Stats"}
         </h2>
 
-        {(showRamzan ? ramzanStats : masjidStats).length === 0 && (
+        {data.length === 0 && (
           <p className="text-gray-500">No data</p>
         )}
 
-        {(showRamzan ? ramzanStats : masjidStats).map((m, i) => (
+        {data.map((m, i) => (
           <div
             key={i}
-            className="flex justify-between border-b py-2 hover:bg-gray-50 px-2 rounded"
+            className="flex justify-between border-b py-2 hover:bg-gray-50 px-2 rounded transition"
           >
-            <div className="font-medium">{m.masjid}</div>
+            <div className="font-medium">
+              {typeof m.masjid === "string" && m.masjid.trim()
+                ? m.masjid
+                : "Unknown Masjid"}
+            </div>
 
             <div className="text-sm text-gray-600">
-              {m.totalJammats} Jammats | {m.totalPeople} People
+              {(m.totalJammats ?? 0)} Jammats | {(m.totalPeople ?? 0)} People
             </div>
           </div>
         ))}
@@ -149,7 +159,8 @@ function YearStatistics() {
 export default YearStatistics;
 
 
-// ✅ CARD
+
+// ✅ CARD COMPONENT
 function Card({ title, value }) {
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition rounded-lg p-4 text-center">
@@ -160,7 +171,7 @@ function Card({ title, value }) {
 }
 
 
-// ✅ BOX
+// ✅ BOX COMPONENT
 function Box({ title, data }) {
 
   if (!data) return null;

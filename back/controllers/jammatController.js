@@ -336,7 +336,8 @@ exports.getMasjidStats = async (req, res) => {
 
       {
         $match: {
-          year: Number(year)
+          year: Number(year),
+          masjidName: { $ne: null, $ne: "" }
         }
       },
 
@@ -356,7 +357,7 @@ exports.getMasjidStats = async (req, res) => {
 
       {
         $group: {
-          _id: "$masjidName",   // ✅ CORRECT
+          _id: "$masjidName",
           totalJammats: { $sum: 1 },
           totalPeople: { $sum: "$totalPeople" }
         }
