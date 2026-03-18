@@ -333,14 +333,12 @@ exports.getMasjidStats = async (req, res) => {
     const { year } = req.params;
 
     const stats = await Jammat.aggregate([
-
       {
         $match: {
           year: Number(year),
-          masjidName: { $ne: null, $ne: "" }
+          masjidName: { $exists: true, $ne: null, $ne: "" }
         }
       },
-
       {
         $addFields: {
           totalPeople: {
@@ -354,7 +352,6 @@ exports.getMasjidStats = async (req, res) => {
           }
         }
       },
-
       {
         $group: {
           _id: "$masjidName",
@@ -362,20 +359,14 @@ exports.getMasjidStats = async (req, res) => {
           totalPeople: { $sum: "$totalPeople" }
         }
       },
-
       {
         $project: {
-          masjid: "$_id",
+          masjid: "$_id",   // ✅ MUST HAVE
           totalJammats: 1,
           totalPeople: 1,
           _id: 0
         }
-      },
-
-      {
-        $sort: { totalJammats: -1 }
       }
-
     ]);
 
     res.json(stats);
@@ -390,14 +381,13 @@ exports.getRamzanMasjidStats = async (req, res) => {
     const { year } = req.params;
 
     const stats = await Jammat.aggregate([
-
       {
         $match: {
           year: Number(year),
-          isRamzan: true   // ✅ FILTER
+          isRamzan: true,
+          masjidName: { $exists: true, $ne: null, $ne: "" }
         }
       },
-
       {
         $addFields: {
           totalPeople: {
@@ -411,7 +401,6 @@ exports.getRamzanMasjidStats = async (req, res) => {
           }
         }
       },
-
       {
         $group: {
           _id: "$masjidName",
@@ -419,20 +408,14 @@ exports.getRamzanMasjidStats = async (req, res) => {
           totalPeople: { $sum: "$totalPeople" }
         }
       },
-
       {
         $project: {
-          masjid: "$_id",
+          masjid: "$_id",   // ✅ VERY IMPORTANT
           totalJammats: 1,
           totalPeople: 1,
           _id: 0
         }
-      },
-
-      {
-        $sort: { totalJammats: -1 }
       }
-
     ]);
 
     res.json(stats);
