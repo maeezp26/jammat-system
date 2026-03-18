@@ -327,35 +327,45 @@ exports.getAllJammats = async (req, res) => {
   }
 };
 
+
 exports.getMasjidStats = async (req, res) => {
   try {
-
     const { year } = req.params;
 
     const stats = await Jammat.aggregate([
 
       {
         $match: {
-          year: { $in: [Number(year), year] }
+          year: Number(year)
         }
       },
 
       {
-        $unwind: "$members"
+        $addFields: {
+          totalPeople: {
+            $sum: {
+              $map: {
+                input: { $ifNull: ["$members", []] },
+                as: "m",
+                in: { $size: { $ifNull: ["$$m.names", []] } }
+              }
+            }
+          }
+        }
       },
 
       {
         $group: {
-          _id: "$members.masjid",
-          totalJammats: { $addToSet: "$_id" },
-          totalPeople: { $sum: { $size: "$members.names" } }
+          _id: "$masjidName",   // ✅ CORRECT
+          totalJammats: { $sum: 1 },
+          totalPeople: { $sum: "$totalPeople" }
         }
       },
 
       {
         $project: {
           masjid: "$_id",
-          totalJammats: { $size: "$totalJammats" },
+          totalJammats: 1,
           totalPeople: 1,
           _id: 0
         }
@@ -374,36 +384,38 @@ exports.getMasjidStats = async (req, res) => {
   }
 };
 
-exports.getMasjidStats = async (req, res) => {
+exports.getRamzanMasjidStats = async (req, res) => {
   try {
-
     const { year } = req.params;
 
     const stats = await Jammat.aggregate([
 
       {
         $match: {
-          year: Number(year)
+          year: Number(year),
+          isRamzan: true   // ✅ FILTER
+        }
+      },
+
+      {
+        $addFields: {
+          totalPeople: {
+            $sum: {
+              $map: {
+                input: { $ifNull: ["$members", []] },
+                as: "m",
+                in: { $size: { $ifNull: ["$$m.names", []] } }
+              }
+            }
+          }
         }
       },
 
       {
         $group: {
-          _id: "$masjidName",   // ✅ CORRECT FIELD
-
+          _id: "$masjidName",
           totalJammats: { $sum: 1 },
-
-          totalPeople: {
-            $sum: {
-              $sum: {
-                $map: {
-                  input: "$members",
-                  as: "m",
-                  in: { $size: "$$m.names" }
-                }
-              }
-            }
-          }
+          totalPeople: { $sum: "$totalPeople" }
         }
       },
 
