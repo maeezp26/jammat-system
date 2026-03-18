@@ -427,6 +427,7 @@ exports.getRamzanMasjidStats = async (req, res) => {
     ]);
 
     res.json(stats);
+    console.log("🚀 NEW VERSION RUNNING");
 
   } catch (err) {
     res.status(500).json({ message: err.message });
