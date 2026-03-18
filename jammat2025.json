@@ -1,0 +1,214 @@
+[
+{
+"year":2025,
+"month":"January",
+"category":"men",
+"jammatNo":1,
+"type":"3days",
+"masjidName":"Jumma Masjid",
+"route":["Bardoli Ijtema"],
+"startDate":"2025-01-13",
+"endDate":"2025-01-15",
+"saathi":13,
+"isRamzan":false,
+"ameer":"Jakwan A. Hafeez",
+"note":"",
+"members":[
+{
+"masjid":"Jumma Masjid",
+"names":[
+"Jakwan A. Hafeez",
+"Asif Shifa",
+"Soyeb A. Rashid",
+"Imran Basir",
+"Ejaz Mukhtiyar",
+"Saad Munaf Kazi",
+"Zakir Habib",
+"Ejaz Jafrulla",
+"Hanif A. Rashid",
+"Amin Hanif A. Rashid",
+"Talha Saeed",
+"Sahil Rayyan",
+"Babu Mustafa"
+]
+}
+]
+},
+
+{
+"year":2025,
+"month":"January",
+"category":"men",
+"jammatNo":2,
+"type":"3days",
+"masjidName":"Noorani Masjid",
+"route":["Wankaner"],
+"startDate":"2025-01-19",
+"endDate":"2025-01-21",
+"saathi":15,
+"isRamzan":false,
+"ameer":"Soyeb A. Rashid",
+"note":"",
+"members":[
+{
+"masjid":"Noorani Masjid",
+"names":[
+"Soyeb A. Rashid",
+"A. Gaffar A. Kader",
+"Imran Ilyas",
+"A. Sattar A. Hafeez",
+"Sajid A. Jalil",
+"Mushtaq Bhai (Driver)",
+"Faizan Sajid",
+"Amin Tawa Fry",
+"Ishaq Haveliwala",
+"Sajid Pithariya",
+"Iqbal Bhai Mukhkha",
+"Rafik Bhai Bhatiyara",
+"Kasim Bhai",
+"Rizwan Haq",
+"Imtiyaz Bhai Bajipura"
+]
+}
+]
+},
+
+{
+"year":2025,
+"month":"January",
+"category":"men",
+"jammatNo":3,
+"type":"3days",
+"masjidName":"Noorani Masjid",
+"route":["Kacholi"],
+"startDate":"2025-01-25",
+"endDate":"2025-01-27",
+"saathi":11,
+"isRamzan":false,
+"ameer":"Asif Asad",
+"note":"",
+"members":[
+{
+"masjid":"Noorani Masjid",
+"names":[
+"Asif Asad",
+"Bilal Sakbhaji",
+"Soyeb Vadwala",
+"Wasim Saeed",
+"Shahid Kalu",
+"Tausif A. Hafeez",
+"Uwais Altaf",
+"Iqbal Bhai Chirag",
+"Asif Pithariya",
+"Ayan Vyara",
+"Tanveer Nadeer"
+]
+}
+]
+},
+
+{
+"year":2025,
+"month":"February",
+"category":"men",
+"jammatNo":1,
+"type":"3days",
+"masjidName":"Jumma Masjid",
+"route":["Bardoli Minara"],
+"startDate":"",
+"endDate":"",
+"saathi":15,
+"isRamzan":false,
+"ameer":"Ejaz Mukhtiyar",
+"note":"",
+"members":[
+{
+"masjid":"Jumma Masjid",
+"names":[
+"Ejaz Mukhtiyar",
+"Jakwan",
+"Bilal Habib",
+"Ejaz Jafrulla",
+"Sajid A. Hamid",
+"Yusuf Bhai Saiyed",
+"Salam Habib",
+"Umair Aslam",
+"Musaib Sajid",
+"A. Haq A. Kader",
+"Soyeb Haveliwala",
+"Gulam Bhai Davji",
+"Sajid A. Khaliq",
+"Munaf Malek",
+"Rafik Bhai Bhatiyara"
+]
+}
+]
+},
+
+{
+"year":2025,
+"month":"February",
+"category":"men",
+"jammatNo":2,
+"type":"3days",
+"masjidName":"Jumma Masjid",
+"route":["Bardoli Minara"],
+"startDate":"2025-02-16",
+"endDate":"2025-02-18",
+"saathi":10,
+"isRamzan":false,
+"ameer":"Kasim Bhai",
+"note":"",
+"members":[
+{
+"masjid":"Jumma Masjid",
+"names":[
+"Kasim Bhai",
+"Maulana Jainul Abedeen",
+"Iqbal Bhai Mukhkha",
+"A. Hafeez Bhai (Tea Seller)",
+"Nazim Cutlery",
+"Soyeb A. Rashid",
+"Imran Mukhtiyar",
+"Sajid Nazir",
+"Sameer Kazi",
+"Imtiyaz Bhai Bajipura"
+]
+}
+]
+},
+
+{
+"year":2025,
+"month":"February",
+"category":"men",
+"jammatNo":3,
+"type":"3days",
+"masjidName":"Noorani Masjid",
+"route":["Haldharu"],
+"startDate":"2025-02-16",
+"endDate":"2025-02-18",
+"saathi":10,
+"isRamzan":false,
+"ameer":"A. Sattar A. Hafeez",
+"note":"",
+"members":[
+{
+"masjid":"Noorani Masjid",
+"names":[
+"A. Sattar A. Hafeez",
+"Sokhat Davji",
+"Mushtaq Bhai (Driver)",
+"Khalil Kazi",
+"Sajid A. Jalil",
+"Ishaq Haveliwala",
+"Amin Tawa Fry",
+"Faizan Sajid",
+"Sajid Basir",
+"Sajid Pithariya"
+]
+}
+]
+}
+
+]

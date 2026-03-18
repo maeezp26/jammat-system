@@ -14,22 +14,33 @@ function AdminDashboard() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState("");
   const [search, setSearch] = useState("");
+  const [type, setType] = useState("");
+const [masjid, setMasjid] = useState("");
 
-  useEffect(() => {
-    const load = async () => {
-      let url = `/jammat/year/${year}`;
-      if (month) {
-        url = `/jammat/month/${year}/${month}`;
-      }
-      try {
-        const res = await API.get(url);
-        setJammats(res.data);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
-    load();
-  }, [year, month]);
+ useEffect(() => {
+
+  const load = async () => {
+    try {
+
+      const query = new URLSearchParams({
+  year,
+  month,
+  type,
+  masjidName: masjid
+}).toString();
+
+      const res = await API.get(`/jammat/filter?${query}`);
+
+      setJammats(res.data);
+
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  load();
+
+}, [year, month, type, masjid]);
 
   const filtered = jammats.filter((j) =>
     j.masjidName.toLowerCase().includes(search.toLowerCase())
@@ -52,35 +63,61 @@ function AdminDashboard() {
       </div>
 
       {/* Controls - Stacked on mobile, 3 columns on desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        <select
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {[2024, 2025, 2026, 2027, 2028].map((y) => (
-            <option key={y} value={y}>{y}</option>
-          ))}
-        </select>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
 
-        <select
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Months</option>
-          {months.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
+  {/* Year */}
+  <select
+    value={year}
+    onChange={(e) => setYear(e.target.value)}
+    className="border p-2"
+  >
+    {[2024, 2025, 2026, 2027, 2028].map((y) => (
+      <option key={y} value={y}>{y}</option>
+    ))}
+  </select>
 
-        <input
-          placeholder="Search masjid..."
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+  {/* Month */}
+  <select
+    value={month}
+    onChange={(e) => setMonth(e.target.value)}
+    className="border p-2"
+  >
+    <option value="">All Months</option>
+    {months.map((m) => (
+      <option key={m} value={m}>{m}</option>
+    ))}
+  </select>
+
+  {/* Type */}
+  <select
+    value={type}
+    onChange={(e) => setType(e.target.value)}
+    className="border p-2"
+  >
+    <option value="">All Types</option>
+    <option value="3days">3 Days</option>
+    <option value="10days">10 Days</option>
+    <option value="40days">40 Days</option>
+    <option value="4months">4 Months</option>
+  </select>
+
+  {/* Masjid Filter */}
+  <input
+    placeholder="Filter Masjid..."
+    value={masjid}
+    onChange={(e) => setMasjid(e.target.value)}
+    className="border p-2"
+  />
+
+  {/* Search */}
+  <input
+    placeholder="Search masjid..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="border p-2"
+  />
+
+</div>
 
       <button
         onClick={() => navigate("/admin/add")}
@@ -88,6 +125,13 @@ function AdminDashboard() {
       >
         + Add New Jammat
       </button>
+
+      <button
+  onClick={() => navigate(`/statistics/${year}`)}
+  className="bg-purple-600 text-white p-3 rounded mb-4 w-full"
+>
+  View Dashboard
+</button>
 
       {/* Table Container with Horizontal Scroll for Mobile */}
       <div className="bg-white shadow-sm border rounded-lg overflow-hidden">

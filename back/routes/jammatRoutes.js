@@ -8,40 +8,37 @@ const {
   getJammatByMonth,
   getJammatById,
   updateJammat,
-   deleteJammat,
+  deleteJammat,
   searchMember,
   filterJammats,
   getYearStatistics,
   exportJammatPDF,
-  getMonthStatistics
+  getMonthStatistics,
+  getMasjidStats
 } = require("../controllers/jammatController");
 
-// Create new jammat
+// Create
 router.post("/", authMiddleware, createJammat);
 
-// Get jammats by year
+// Read
 router.get("/year/:year", getJammatByYear);
-
-// Get jammats by month
 router.get("/month/:year/:month", getJammatByMonth);
-
 router.get("/search/member", searchMember);
-
 router.get("/filter", filterJammats);
-
 router.get("/statistics/:year", getYearStatistics);
+router.get("/statistics/:year/:month", getMonthStatistics);
+router.get("/masjid-stats/:year", getMasjidStats); // ✅ FIXED
 
+// Export
 router.get("/export/pdf/:year", exportJammatPDF);
 
-router.get("/statistics/:year/:month", getMonthStatistics);
-
-// Get single jammat detail
+// Single
 router.get("/:id", getJammatById);
 
-// Update jammat
+// Update
 router.put("/:id", authMiddleware, updateJammat);
 
-// Delete jammat
+// Delete
 router.delete("/:id", authMiddleware, deleteJammat);
 
 module.exports = router;

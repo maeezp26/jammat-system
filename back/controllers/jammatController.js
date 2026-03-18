@@ -103,29 +103,22 @@ exports.searchMember = async (req, res) => {
 
 exports.filterJammats = async (req, res) => {
   try {
-    const { type, category, year, isRamzan } = req.query;
+
+    const { type, category, year, isRamzan, month, masjidName } = req.query;
 
     let filter = {};
 
-    if (type) {
-      filter.type = type;
-    }
+    if (type) filter.type = type;
+    if (category) filter.category = category;
+    if (year) filter.year = Number(year);
+    if (month) filter.month = month;
+    if (masjidName) filter.masjidName = masjidName;
+    if (isRamzan) filter.isRamzan = isRamzan === "true";
 
-    if (category) {
-      filter.category = category;
-    }
-
-    if (year) {
-      filter.year = Number(year);
-    }
-
-    if (isRamzan) {
-      filter.isRamzan = isRamzan === "true";
-    }
-
-    const jammats = await Jammat.find(filter).sort({ startDate: 1 });
+    const jammats = await Jammat.find(filter).sort({ startDate: -1 });
 
     res.json(jammats);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -310,5 +303,73 @@ exports.getMonthStatistics = async (req, res) => {
 
     res.status(500).json({ message: err.message });
 
+  }
+};
+
+exports.getAllJammats = async (req, res) => {
+  try {
+
+    const { year, month, masjidName, type } = req.query;
+
+    let query = {};
+
+    if (year) query.year = Number(year);
+    if (month) query.month = month;
+    if (masjidName) query.masjidName = masjidName;
+    if (type) query.type = type;
+
+    const jammats = await Jammat.find(query).sort({ startDate: -1 });
+
+    res.json(jammats);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getMasjidStats = async (req, res) => {
+  try {
+
+    const { year } = req.params;
+
+    const stats = await Jammat.aggregate([
+
+      {
+        $match: {
+          year: { $in: [Number(year), year] }
+        }
+      },
+
+      {
+        $unwind: "$members"
+      },
+
+      {
+        $group: {
+          _id: "$members.masjid",
+          totalJammats: { $addToSet: "$_id" },
+          totalPeople: { $sum: { $size: "$members.names" } }
+        }
+      },
+
+      {
+        $project: {
+          masjid: "$_id",
+          totalJammats: { $size: "$totalJammats" },
+          totalPeople: 1,
+          _id: 0
+        }
+      },
+
+      {
+        $sort: { totalJammats: -1 }
+      }
+
+    ]);
+
+    res.json(stats);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

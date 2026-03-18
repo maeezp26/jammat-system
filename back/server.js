@@ -13,6 +13,7 @@ app.use(express.json());
 app.use("/api/jammat", jammatRoutes);
 app.use("/api/admin", adminRoutes);
 
+
 app.get("/", (req, res) => {
   res.send("Jammat Management API Running");
 });
