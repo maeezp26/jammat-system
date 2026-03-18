@@ -14,7 +14,8 @@ const {
   getYearStatistics,
   exportJammatPDF,
   getMonthStatistics,
-  getMasjidStats
+  getMasjidStats,
+  getRamzanMasjidStats
 } = require("../controllers/jammatController");
 
 // Create
@@ -28,6 +29,7 @@ router.get("/filter", filterJammats);
 router.get("/statistics/:year", getYearStatistics);
 router.get("/statistics/:year/:month", getMonthStatistics);
 router.get("/masjid-stats/:year", getMasjidStats); // ✅ FIXED
+router.get("/ramzan-masjid-stats/:year", getRamzanMasjidStats);
 
 // Export
 router.get("/export/pdf/:year", exportJammatPDF);

@@ -5,16 +5,25 @@ import jsPDF from "jspdf";
 
 function YearStatistics() {
   const { year } = useParams();
+
   const [stats, setStats] = useState(null);
   const [masjidStats, setMasjidStats] = useState([]);
+  const [ramzanStats, setRamzanStats] = useState([]);
+
+  const [showRamzan, setShowRamzan] = useState(false); // ✅ TOGGLE
 
   useEffect(() => {
     const load = async () => {
       try {
         const res = await API.get(`/jammat/statistics/${year}`);
         setStats(res.data);
+
         const res2 = await API.get(`/jammat/masjid-stats/${year}`);
-setMasjidStats(res2.data);
+        setMasjidStats(res2.data);
+
+        const res3 = await API.get(`/jammat/ramzan-masjid-stats/${year}`);
+        setRamzanStats(res3.data);
+
       } catch (err) {
         console.error("Failed to load statistics", err);
       }
@@ -33,7 +42,6 @@ setMasjidStats(res2.data);
     let y = 40;
 
     doc.setFontSize(12);
-
     doc.text(`Total Members: ${stats.totalMembers || 0}`, 20, y);
     y += 10;
 
@@ -53,18 +61,34 @@ setMasjidStats(res2.data);
   return (
     <div className="p-4 max-w-5xl mx-auto">
 
-      <h1 className="text-2xl font-bold mb-4">
+      {/* HEADER */}
+      <h1 className="text-2xl font-bold mb-4 text-center">
         {year} Dashboard
       </h1>
 
-      <button
-        onClick={exportPDF}
-        className="bg-blue-600 text-white px-4 py-2 rounded mb-6"
-      >
-        Export PDF
-      </button>
+      {/* BUTTONS */}
+      <div className="flex gap-3 justify-center mb-6 flex-wrap">
 
-      {/* ✅ SUMMARY CARDS */}
+        <button
+          onClick={exportPDF}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+        >
+          Export PDF
+        </button>
+
+        {/* ✅ TOGGLE BUTTON */}
+        <button
+          onClick={() => setShowRamzan(!showRamzan)}
+          className={`px-4 py-2 rounded shadow text-white ${
+            showRamzan ? "bg-yellow-500" : "bg-gray-700"
+          }`}
+        >
+          {showRamzan ? "Showing Ramzan 🌙" : "Show Ramzan Only"}
+        </button>
+
+      </div>
+
+      {/* SUMMARY CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
         <Card title="Total Members" value={stats.totalMembers || 0} />
@@ -74,16 +98,16 @@ setMasjidStats(res2.data);
 
       </div>
 
-      {/* ✅ MEN + MASTURAT */}
+      {/* MEN + MASTURAT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-        <Box title="Men Jamaats" data={stats.mens} color="blue" />
-        <Box title="Masturat Jamaats" data={stats.masturat} color="pink" />
+        <Box title="Men Jamaats" data={stats.mens} />
+        <Box title="Masturat Jamaats" data={stats.masturat} />
 
       </div>
 
-      {/* ✅ TOTAL SUMMARY */}
-      <div className="bg-green-500 text-white p-4 rounded">
+      {/* TOTAL SUMMARY */}
+      <div className="bg-green-500 text-white p-4 rounded mb-6 shadow">
         <h2 className="font-bold mb-2">Total Summary</h2>
 
         <div>3 Days: {stats.summary?.["3days"] || 0}</div>
@@ -92,29 +116,32 @@ setMasjidStats(res2.data);
         <div>4 Months: {stats.summary?.["4months"] || 0}</div>
       </div>
 
-    <div className="bg-white p-4 rounded shadow mt-6">
+      {/* ✅ MASJID SECTION WITH TOGGLE */}
+      <div className="bg-white p-4 rounded shadow">
 
-  <h2 className="font-bold mb-3 text-lg">
-    Masjid Wise Stats
-  </h2>
+        <h2 className="font-bold mb-3 text-lg">
+          {showRamzan ? "Ramzan Masjid Stats 🌙" : "Masjid Wise Stats"}
+        </h2>
 
-  {masjidStats.length === 0 && (
-    <p className="text-gray-500">No data</p>
-  )}
+        {(showRamzan ? ramzanStats : masjidStats).length === 0 && (
+          <p className="text-gray-500">No data</p>
+        )}
 
-  {masjidStats.map((m, i) => (
-    <div
-      key={i}
-      className="flex justify-between border-b py-2"
-    >
-      <div>{m.masjid}</div>
-      <div className="text-sm text-gray-600">
-        {m.totalJammats} Jammats | {m.totalPeople} People
+        {(showRamzan ? ramzanStats : masjidStats).map((m, i) => (
+          <div
+            key={i}
+            className="flex justify-between border-b py-2 hover:bg-gray-50 px-2 rounded"
+          >
+            <div className="font-medium">{m.masjid}</div>
+
+            <div className="text-sm text-gray-600">
+              {m.totalJammats} Jammats | {m.totalPeople} People
+            </div>
+          </div>
+        ))}
+
       </div>
-    </div>
-  ))}
 
-</div>
     </div>
   );
 }
@@ -122,7 +149,7 @@ setMasjidStats(res2.data);
 export default YearStatistics;
 
 
-// ✅ Card
+// ✅ CARD
 function Card({ title, value }) {
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition rounded-lg p-4 text-center">
@@ -133,7 +160,7 @@ function Card({ title, value }) {
 }
 
 
-// ✅ Box
+// ✅ BOX
 function Box({ title, data }) {
 
   if (!data) return null;
@@ -157,7 +184,6 @@ function Box({ title, data }) {
         </div>
 
       </div>
-
 
     </div>
   );

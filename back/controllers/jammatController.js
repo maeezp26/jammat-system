@@ -373,3 +373,58 @@ exports.getMasjidStats = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.getMasjidStats = async (req, res) => {
+  try {
+
+    const { year } = req.params;
+
+    const stats = await Jammat.aggregate([
+
+      {
+        $match: {
+          year: Number(year)
+        }
+      },
+
+      {
+        $group: {
+          _id: "$masjidName",   // ✅ CORRECT FIELD
+
+          totalJammats: { $sum: 1 },
+
+          totalPeople: {
+            $sum: {
+              $sum: {
+                $map: {
+                  input: "$members",
+                  as: "m",
+                  in: { $size: "$$m.names" }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      {
+        $project: {
+          masjid: "$_id",
+          totalJammats: 1,
+          totalPeople: 1,
+          _id: 0
+        }
+      },
+
+      {
+        $sort: { totalJammats: -1 }
+      }
+
+    ]);
+
+    res.json(stats);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
