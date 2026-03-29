@@ -83,17 +83,19 @@ exports.deleteJammat = async (req, res) => {
 
 exports.searchMember = async (req, res) => {
   try {
-    const { name, year, month } = req.query;
+    const { name, year, month, category, type, masjid } = req.query;
 
     let filter = {
      "members.names": { $regex: name, $options: "i" }
     };
 
     if (year) filter.year = Number(year);
-
     if (month) filter.month = month;
+    if (category) filter.category = category;
+    if (type) filter.type = type;
+    if (masjid) filter.masjidName = masjid;
 
-    const results = await Jammat.find(filter);
+    const results = await Jammat.find(filter).sort({ startDate: -1 });
 
     res.json(results);
   } catch (err) {
@@ -336,7 +338,66 @@ exports.getMasjidStats = async (req, res) => {
       {
         $match: {
           year: Number(year),
-          masjidName: { $exists: true, $ne: null, $ne: "" }
+          masjidName: { $nin: ["", null] } // optional but recommended
+        }
+      },
+
+      {
+        $addFields: {
+          totalPeople: {
+            $sum: {
+              $map: {
+                input: { $ifNull: ["$members", []] },
+                as: "m",
+                in: { $size: { $ifNull: ["$$m.names", []] } }
+              }
+            }
+          }
+        }
+      },
+
+      {
+        $group: {
+          _id: "$masjidName",   // ✅ THIS IS THE FIX
+          totalJammats: { $sum: 1 },
+          totalPeople: { $sum: "$totalPeople" }
+        }
+      },
+
+      {
+        $project: {
+          masjid: "$_id",
+          totalJammats: 1,
+          totalPeople: 1,
+          _id: 0
+        }
+      },
+
+      {
+        $sort: { totalJammats: -1 }
+      }
+
+    ]);
+
+    console.log("🔥 FIXED MASJID STATS RUNNING");
+
+    res.json(stats);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getRamzanMasjidStats = async (req, res) => {
+  try {
+    const { year } = req.params;
+
+    const stats = await Jammat.aggregate([
+
+      {
+        $match: {
+          year: Number(year),
+          isRamzan: true   // ✅ FILTER
         }
       },
 
@@ -364,7 +425,7 @@ exports.getMasjidStats = async (req, res) => {
 
       {
         $project: {
-          masjid: "$_id",   // ✅ FIXED
+          masjid: "$_id",
           totalJammats: 1,
           totalPeople: 1,
           _id: 0
@@ -384,52 +445,17 @@ exports.getMasjidStats = async (req, res) => {
   }
 };
 
-exports.getRamzanMasjidStats = async (req, res) => {
+exports.fixMasjidData = async (req, res) => {
   try {
-    const { year } = req.params;
-
-    const stats = await Jammat.aggregate([
+    const result = await Jammat.updateMany(
+      { masjidName: { $type: "object" } },
       {
-        $match: {
-          year: Number(year),
-          isRamzan: true,
-          masjidName: { $exists: true, $ne: null, $ne: "" }
-        }
-      },
-      {
-        $addFields: {
-          totalPeople: {
-            $sum: {
-              $map: {
-                input: { $ifNull: ["$members", []] },
-                as: "m",
-                in: { $size: { $ifNull: ["$$m.names", []] } }
-              }
-            }
-          }
-        }
-      },
-      {
-        $group: {
-          _id: "$masjidName",
-          totalJammats: { $sum: 1 },
-          totalPeople: { $sum: "$totalPeople" }
-        }
-      },
-      {
-        $project: {
-          masjid: "$_id",   // ✅ VERY IMPORTANT
-          totalJammats: 1,
-          totalPeople: 1,
-          _id: 0
-        }
+        $set: { masjidName: "Unknown Masjid" }
       }
-    ]);
+    );
 
-    res.json(stats);
-    console.log("🚀 NEW VERSION RUNNING");
-
+    res.json({ message: "Fixed", result });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
