@@ -39,7 +39,6 @@ function MonthPage() {
     doc.setFontSize(11);
     doc.setTextColor(100);
     doc.setFont(undefined, "normal");
-    doc.text(`Masjid-e-Ayesha & Elaahi Masjid, Valod`, pageW / 2, 28, { align: "center" });
 
     let y = 38;
 

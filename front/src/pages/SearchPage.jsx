@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const TYPE_LABELS = { "3days": "3 Days", "10days": "10 Days", "40days": "40 Days", "4months": "4 Months", "2months": "2 Months" };
 const TYPE_COLORS = { "3days": "bg-blue-100 text-blue-700", "10days": "bg-purple-100 text-purple-700", "40days": "bg-orange-100 text-orange-700", "4months": "bg-red-100 text-red-700", "2months": "bg-pink-100 text-pink-700" };
-const MASJIDS = ["Masjid-e-Ayesha", "Elaahi Masjid"];
+const MASJIDS = ["Jumma Masjid", "Noorani Masjid","Ayesha Masjid","Fatima Masjid","Bilal Masjid","Elaahi Masjid","Medina Masjid","Bajipura","Buhari"];
 
 function SearchPage() {
   const [name, setName] = useState("");
