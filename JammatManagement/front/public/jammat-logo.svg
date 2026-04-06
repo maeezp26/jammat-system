@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#065f46"/>
+
+  <!-- Crescent moon (top right) -->
+  <path d="M68 18 A14 14 0 1 1 54 32 A10 10 0 1 0 68 18Z" fill="#fbbf24" opacity="0.95"/>
+
+  <!-- Star next to crescent -->
+  <polygon points="44,20 45.5,24.5 50,24.5 46.5,27.5 47.8,32 44,29 40.2,32 41.5,27.5 38,24.5 42.5,24.5" fill="#fbbf24"/>
+
+  <!-- Mosque base platform -->
+  <rect x="15" y="74" width="70" height="5" rx="2" fill="#a7f3d0"/>
+
+  <!-- Main dome -->
+  <ellipse cx="50" cy="58" rx="18" ry="10" fill="#10b981"/>
+  <path d="M32 58 Q50 36 68 58Z" fill="#10b981"/>
+  <!-- Dome highlight -->
+  <path d="M38 54 Q50 40 62 54" stroke="#6ee7b7" stroke-width="1.5" fill="none" opacity="0.7"/>
+
+  <!-- Central minaret -->
+  <rect x="46" y="36" width="8" height="38" rx="2" fill="#34d399"/>
+  <polygon points="46,36 50,26 54,36" fill="#6ee7b7"/>
+  <!-- Minaret tip -->
+  <circle cx="50" cy="25" r="2" fill="#fbbf24"/>
+
+  <!-- Left minaret -->
+  <rect x="19" y="55" width="5" height="19" rx="1.5" fill="#34d399"/>
+  <polygon points="19,55 21.5,48 24,55" fill="#6ee7b7"/>
+  <circle cx="21.5" cy="47.5" r="1.5" fill="#fbbf24"/>
+
+  <!-- Right minaret -->
+  <rect x="76" y="55" width="5" height="19" rx="1.5" fill="#34d399"/>
+  <polygon points="76,55 78.5,48 81,55" fill="#6ee7b7"/>
+  <circle cx="78.5" cy="47.5" r="1.5" fill="#fbbf24"/>
+
+  <!-- Mosque door -->
+  <path d="M44 79 L44 68 Q50 62 56 68 L56 79Z" fill="#065f46"/>
+
+  <!-- Windows on sides -->
+  <path d="M34 66 Q37 62 40 66" stroke="#a7f3d0" stroke-width="1.5" fill="none"/>
+  <path d="M60 66 Q63 62 66 66" stroke="#a7f3d0" stroke-width="1.5" fill="none"/>
+</svg>

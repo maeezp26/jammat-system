@@ -49,14 +49,6 @@ function Home() {
             <div className="text-xs text-gray-500">Yearly overview</div>
           </div>
         </button>
-        <button onClick={() => navigate("/village")}
-          className="col-span-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow-md p-4 flex items-center gap-3 hover:shadow-lg transition active:scale-95">
-          <span className="text-2xl">🏡</span>
-          <div className="text-left">
-            <div className="font-semibold text-sm">Village Statistics</div>
-            <div className="text-xs text-emerald-100">Valod & Masjid-wise data</div>
-          </div>
-        </button>
       </div>
 
       {/* Month Grid */}

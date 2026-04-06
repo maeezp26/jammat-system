@@ -72,18 +72,14 @@ function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="max-w-2xl mx-auto mt-5 grid grid-cols-3 gap-3">
+        <div className="max-w-2xl mx-auto mt-5 grid grid-cols-2 gap-3">
           <button onClick={() => navigate("/admin/add")}
-            className="bg-yellow-400 hover:bg-yellow-300 text-emerald-900 font-bold py-3 rounded-xl text-sm transition flex items-center justify-center gap-1 shadow">
-            ＋ Jammat
+            className="bg-yellow-400 hover:bg-yellow-300 text-emerald-900 font-bold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow">
+            ＋ Add Jammat
           </button>
           <button onClick={() => navigate(`/statistics/${year}`)}
-            className="bg-white/15 hover:bg-white/25 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-1">
-            📊 Stats
-          </button>
-          <button onClick={() => navigate("/admin/village")}
-            className="bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-1">
-            🏡 Village
+            className="bg-white/15 hover:bg-white/25 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+            📊 Statistics
           </button>
         </div>
       </div>

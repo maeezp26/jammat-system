@@ -1,19 +1,16 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import MonthPage from "./pages/MonthPage";
 import JammatDetail from "./pages/JammatDetail";
-import SearchPage from "./pages/SearchPage";
-import MonthStats from "./pages/MonthStats";
-import YearStatistics from "./pages/YearStatistics";
-import VillagePage from "./pages/VillagePage";
 
 import Login from "./admin/Login";
 import AddJammat from "./admin/AddJammat";
+import SearchPage from "./pages/SearchPage";
+import MonthStats from "./pages/MonthStats";
 import EditJammat from "./admin/EditJammat";
 import AdminDashboard from "./admin/AdminDashboard";
-import Dashboard from "./admin/Dashboard";
-import AdminVillage from "./admin/AdminVillage";
+import YearStatistics from "./pages/YearStatistics";
 
 import Navbar from "./Navbar";
 
@@ -29,15 +26,12 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/statistics/:year" element={<YearStatistics />} />
         <Route path="/statistics/:year/:month" element={<MonthStats />} />
-        <Route path="/village" element={<VillagePage />} />
 
         {/* Admin */}
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add" element={<AddJammat />} />
         <Route path="/admin/edit/:id" element={<EditJammat />} />
-        <Route path="/admin/village" element={<AdminVillage />} />
-        <Route path="/admin" element={<Dashboard />} />
       </Routes>
     </div>
   );

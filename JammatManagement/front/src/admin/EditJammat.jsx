@@ -18,14 +18,9 @@ function EditJammat() {
   const navigate = useNavigate();
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(false);
-  // Route as array of strings
-  const [routeItems, setRouteItems] = useState([]);
 
   useEffect(() => {
-    API.get(`/jammat/${id}`).then(res => {
-      setForm(res.data);
-      setRouteItems(Array.isArray(res.data.route) ? res.data.route : []);
-    });
+    API.get(`/jammat/${id}`).then(res => setForm(res.data));
   }, [id]);
 
   const handleChange = (e) => {
@@ -33,34 +28,36 @@ function EditJammat() {
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-  // Route handlers
-  const addRouteStop = () => setRouteItems([...routeItems, ""]);
-  const updateRouteStop = (i, val) => { const u = [...routeItems]; u[i] = val; setRouteItems(u); };
-  const removeRouteStop = (i) => { const u = [...routeItems]; u.splice(i, 1); setRouteItems(u); };
-  const moveRoute = (i, dir) => {
-    const u = [...routeItems];
-    const j = i + dir;
-    if (j < 0 || j >= u.length) return;
-    [u[i], u[j]] = [u[j], u[i]];
-    setRouteItems(u);
+  const removeMember = (gi, ni) => {
+    const u = [...form.members];
+    u[gi].names.splice(ni, 1);
+    setForm({ ...form, members: u });
   };
 
-  // Members handlers
-  const removeMember = (gi, ni) => {
-    const u = [...form.members]; u[gi].names.splice(ni, 1); setForm({ ...form, members: u });
-  };
   const removeMasjidGroup = (gi) => {
-    const u = [...form.members]; u.splice(gi, 1); setForm({ ...form, members: u });
+    const u = [...form.members];
+    u.splice(gi, 1);
+    setForm({ ...form, members: u });
   };
+
   const handleMemberChange = (gi, ni, val) => {
-    const u = [...form.members]; u[gi].names[ni] = val; setForm({ ...form, members: u });
+    const u = [...form.members];
+    u[gi].names[ni] = val;
+    setForm({ ...form, members: u });
   };
+
   const handleMasjidChange = (gi, val) => {
-    const u = [...form.members]; u[gi].masjid = val; setForm({ ...form, members: u });
+    const u = [...form.members];
+    u[gi].masjid = val;
+    setForm({ ...form, members: u });
   };
+
   const addMember = (gi) => {
-    const u = [...form.members]; u[gi].names.push(""); setForm({ ...form, members: u });
+    const u = [...form.members];
+    u[gi].names.push("");
+    setForm({ ...form, members: u });
   };
+
   const addMasjidGroup = () => {
     setForm({ ...form, members: [...form.members, { masjid: "", names: [""] }] });
   };
@@ -69,8 +66,7 @@ function EditJammat() {
     setLoading(true);
     const token = localStorage.getItem("token");
     try {
-      const payload = { ...form, route: routeItems.filter(r => r.trim() !== "") };
-      await API.put(`/jammat/${id}`, payload, { headers: { Authorization: token } });
+      await API.put(`/jammat/${id}`, form, { headers: { Authorization: token } });
       alert("Updated successfully ✅");
       navigate(`/jammat/${id}`);
     } catch (err) {
@@ -173,44 +169,6 @@ function EditJammat() {
           </label>
         </div>
 
-        {/* ✅ ROUTE SECTION — NEWLY ADDED */}
-        <div className="bg-white rounded-2xl shadow-sm p-5 space-y-3">
-          <h2 className="font-bold text-gray-700 text-sm uppercase tracking-wider border-b pb-2">🗺️ Route Stops</h2>
-
-          {routeItems.length === 0 && (
-            <p className="text-sm text-gray-400 italic">No route stops added yet</p>
-          )}
-
-          {routeItems.map((stop, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
-              <input
-                value={stop}
-                onChange={e => updateRouteStop(i, e.target.value)}
-                placeholder={`Stop ${i + 1}`}
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              />
-              <button onClick={() => moveRoute(i, -1)} disabled={i === 0}
-                className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 disabled:opacity-30 hover:bg-gray-200 text-xs font-bold flex-shrink-0">↑</button>
-              <button onClick={() => moveRoute(i, 1)} disabled={i === routeItems.length - 1}
-                className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 disabled:opacity-30 hover:bg-gray-200 text-xs font-bold flex-shrink-0">↓</button>
-              <button onClick={() => removeRouteStop(i)}
-                className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 text-sm font-bold flex-shrink-0">✕</button>
-            </div>
-          ))}
-
-          {routeItems.length > 0 && (
-            <div className="bg-emerald-50 rounded-xl px-3 py-2 text-xs text-emerald-700 font-medium">
-              📍 {routeItems.filter(r => r.trim()).join(" → ")}
-            </div>
-          )}
-
-          <button onClick={addRouteStop}
-            className="w-full border-2 border-dashed border-emerald-300 hover:border-emerald-500 text-emerald-600 font-semibold py-2.5 rounded-xl text-sm transition">
-            + Add Route Stop
-          </button>
-        </div>
-
         {/* Members */}
         <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
           <h2 className="font-bold text-gray-700 text-sm uppercase tracking-wider border-b pb-2">👥 Members</h2>
@@ -240,7 +198,9 @@ function EditJammat() {
                       className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
                     />
                     <button onClick={() => removeMember(gi, ni)}
-                      className="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full text-sm font-bold flex-shrink-0">✕</button>
+                      className="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full text-sm transition font-bold flex-shrink-0">
+                      ✕
+                    </button>
                   </div>
                 ))}
               </div>

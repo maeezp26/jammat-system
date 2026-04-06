@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function Navbar() {
@@ -17,10 +17,9 @@ function Navbar() {
           <Link to="/" className="hover:text-yellow-300 transition">Home</Link>
           <Link to="/search" className="hover:text-yellow-300 transition">Search</Link>
           <Link to={"/statistics/" + new Date().getFullYear()} className="hover:text-yellow-300 transition">Stats</Link>
-          <Link to="/village" className="hover:text-yellow-300 transition">🏡 Village</Link>
           <Link to="/admin/login" className="bg-yellow-400 text-emerald-900 px-3 py-1 rounded-full font-semibold hover:bg-yellow-300 transition text-xs">Admin</Link>
         </div>
-        <button className="sm:hidden p-2 rounded-lg hover:bg-emerald-700 transition text-lg" onClick={() => setOpen(!open)}>
+        <button className="sm:hidden p-2 rounded-lg hover:bg-emerald-700 transition" onClick={() => setOpen(!open)}>
           {open ? "✕" : "☰"}
         </button>
       </div>
@@ -29,7 +28,6 @@ function Navbar() {
           <Link to="/" onClick={() => setOpen(false)} className="block py-2 hover:text-yellow-300">🏠 Home</Link>
           <Link to="/search" onClick={() => setOpen(false)} className="block py-2 hover:text-yellow-300">🔍 Search Member</Link>
           <Link to={"/statistics/" + new Date().getFullYear()} onClick={() => setOpen(false)} className="block py-2 hover:text-yellow-300">📊 Statistics</Link>
-          <Link to="/village" onClick={() => setOpen(false)} className="block py-2 hover:text-yellow-300">🏡 Village Stats</Link>
           <Link to="/admin/login" onClick={() => setOpen(false)} className="block py-2 text-yellow-300">🔐 Admin Login</Link>
         </div>
       )}
